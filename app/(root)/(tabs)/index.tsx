@@ -1,4 +1,4 @@
-import { Text, View, Image, TouchableOpacity, FlatList, Button } from "react-native";
+import { Text, View, Image, TouchableOpacity, FlatList, Button, ActivityIndicator } from "react-native";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
@@ -10,6 +10,7 @@ import { useGlobalContext } from "@/lib/global-provider";
 import { router, useLocalSearchParams } from "expo-router";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
+import NoResults from "@/components/NoResults";
 
 export default function Index() {
   const {user}= useGlobalContext();
@@ -45,12 +46,20 @@ export default function Index() {
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList
-          data= {properties}
+          data= {[]}
           renderItem={({item}) => <Card item={item} onPress={() => handleCardPress(item.$id)} />}
           keyExtractor={(item) => item.$id}
           numColumns={2}
           contentContainerClassName="pb-32"
           columnWrapperClassName="flex px-5 gap-5"
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            loading ? (
+              <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+            ) : (
+              <NoResults />
+            )
+          }
           ListHeaderComponent={ 
             <View className="px-5">
               <View className="flex flex-row items-center justify-between mt-5">
@@ -74,7 +83,7 @@ export default function Index() {
               </View>
 
               <FlatList
-                  data= {latestProperties}
+                  data= {[]}
                   renderItem={({item}) => <FeaturedCard item={item} onPress={() => handleCardPress(item.$id)} />}
                   keyExtractor={(item) => item.$id}
                   horizontal
