@@ -43,9 +43,9 @@ export default function Index() {
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList
-          data= {[1, 2, 3, 4]}
+          data= {properties}
           renderItem={({item}) => <Card />}
-          keyExtractor={(item) => item.toString()}
+          keyExtractor={(item) => item.$id}
           numColumns={2}
           contentContainerClassName="pb-32"
           columnWrapperClassName="flex px-5 gap-5"
@@ -72,9 +72,9 @@ export default function Index() {
               </View>
 
               <FlatList
-                  data= {[1, 2, 3]}
+                  data= {latestProperties}
                   renderItem={({item}) => <FeaturedCard />} 
-                  keyExtractor={(item) => item.toString()}
+                  keyExtractor={(item) => item.$id}
                   horizontal
                   bounces={false}
                   showsHorizontalScrollIndicator={false}
