@@ -5,6 +5,7 @@ import images from "@/constants/images";
 import icons from "@/constants/icons";
 import Search from "@/components/Search";
 import { FeaturedCard, Card } from "@/components/Cards";
+import Filters from "@/components/Filters";
 
 export default function Index() {
   return (
@@ -29,9 +30,27 @@ export default function Index() {
             <Text className="text-base font-rubik-bold text-primary-300">See All</Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <FeaturedCard />
-      <Card />
+
+        <View className="flex flex-row gap-5 mt-5">
+          <FeaturedCard />
+          <FeaturedCard />
+          <FeaturedCard />
+        </View>
+        </View>
+
+        <View className="flex flex-row items-center justify-between">
+          <Text className="text-xl font-rubik-bold text-black-300">Our Recommendation</Text>
+          <TouchableOpacity>
+            <Text className="text-base font-rubik-bold text-primary-300">See All</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Filters />
+
+        <View className="flex flex-row gap-5 mt-5">
+          <Card />
+          <Card />
+        </View>
       </View>
     </SafeAreaView>
   );
