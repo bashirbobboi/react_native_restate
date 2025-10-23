@@ -7,7 +7,7 @@ import Search from "@/components/Search";
 import { FeaturedCard, Card } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import { useGlobalContext } from "@/lib/global-provider";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
 
@@ -28,6 +28,8 @@ export default function Index() {
     },
     skip: true,
   })
+
+  const handleCardPress = (id: string) => router.push(`/properties/${id}`);
   
   useEffect(() => {
     refetch({
@@ -44,7 +46,7 @@ export default function Index() {
     <SafeAreaView className="bg-white h-full">
       <FlatList
           data= {properties}
-          renderItem={({item}) => <Card />}
+          renderItem={({item}) => <Card item={item} onPress={() => handleCardPress(item.$id)} />}
           keyExtractor={(item) => item.$id}
           numColumns={2}
           contentContainerClassName="pb-32"
@@ -73,7 +75,7 @@ export default function Index() {
 
               <FlatList
                   data= {latestProperties}
-                  renderItem={({item}) => <FeaturedCard />} 
+                  renderItem={({item}) => <FeaturedCard item={item} onPress={() => handleCardPress(item.$id)} />}
                   keyExtractor={(item) => item.$id}
                   horizontal
                   bounces={false}
