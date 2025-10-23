@@ -1,4 +1,5 @@
 import { Text, View, Image, TouchableOpacity, FlatList, Button } from "react-native";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "@/constants/images";
 import icons from "@/constants/icons";
@@ -6,10 +7,39 @@ import Search from "@/components/Search";
 import { FeaturedCard, Card } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import { useGlobalContext } from "@/lib/global-provider";
-import seed from "@/lib/seed";
+import { useLocalSearchParams } from "expo-router";
+import { getLatestProperties, getProperties } from "@/lib/appwrite";
+import { useAppwrite } from "@/lib/useAppwrite";
 
 export default function Index() {
   const {user}= useGlobalContext();
+  const params = useLocalSearchParams<{ query?: string; filter?: string; }>();
+
+  const {data: latestProperties, loading: latestPropertiesLoading} = useAppwrite({
+        fn: getLatestProperties
+      });
+
+  const {data: properties, loading, refetch} = useAppwrite({
+    fn: getProperties,
+    params: {
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6
+    },
+    skip: true,
+  })
+  
+  useEffect(() => {
+    refetch({
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6
+    })
+
+
+  }, [params.filter, params.query])
+
+
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList
