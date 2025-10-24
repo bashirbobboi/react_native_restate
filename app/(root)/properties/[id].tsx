@@ -31,7 +31,7 @@ const Property = () => {
           <Text className='text-primary-300 bg-primary-200 rounded-full font-bold px-2 py-1'> Apartment </Text>
           <View className='flex flex-row px-2 py-1'>  
             <Image source={icons.star} className='size-5' />
-            <Text className='font-semibold text-black-200'> 4.8 (1,275 reviews) </Text>
+            <Text className='font-bold text-black-200'> 4.8 (1,275 reviews) </Text>
           </View>   
         </View>
         <View className='flex flex-row justify-content gap-2 mt-6'>
@@ -79,7 +79,7 @@ const Property = () => {
         <View className='mt-10'>
           <Text className='text-2xl font-rubik-bold'>Overview</Text>
           <View className=' mt-5'>
-            <Text className='text-base leading-relaxed text-black-200 font-rubik'>
+            <Text className='text-xl leading-relaxed text-black-200 font-rubik'>
             Sleek, modern 2-bedroom apartment with open living space, 
             high-end finishes, and city views. Minutes from downtown, 
             dining, and transit.
