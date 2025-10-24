@@ -1,4 +1,5 @@
 import { ImageCard } from "@/components/Cards"
+import CustomBottomNav from '@/components/CustomBottomNav'
 import Gallery from '@/components/Gallery'
 import icons from '@/constants/icons'
 import images from '@/constants/images'
@@ -11,12 +12,6 @@ import { Dimensions, FlatList, Image, Linking, ScrollView, Text, TouchableOpacit
 const Property = () => {
     const { id } = useLocalSearchParams();
 
-    const galleryImages = [
-      { id: "1", img: images.japan },
-      { id: "2", img: images.map },
-      { id: "3", img: images.newYork },
-    ];
-
     const { height } = Dimensions.get('window');
 
     const {data: property, loading, refetch} = useAppwrite({
@@ -26,6 +21,15 @@ const Property = () => {
         },
         // Remove skip: true to fetch automatically
     })
+
+    // Use property images if available, otherwise fallback to default images
+    const galleryImages = property && property.images && property.images.length > 0 
+      ? property.images.map((img: string, index: number) => ({ id: index.toString(), img: { uri: img } }))
+      : [
+          { id: "1", img: images.japan },
+          { id: "2", img: images.map },
+          { id: "3", img: images.newYork },
+        ];
 
     if (loading) {
         return (
@@ -44,18 +48,23 @@ const Property = () => {
     }
 
   return (
-    <ScrollView className='bg-white'>
-      <Gallery />
+    <View className="flex-1 bg-white">
+      <ScrollView className='flex-1' contentContainerStyle={{ paddingBottom: 100 }}>
+        <Gallery />
 
-      <View className='pl-6 pr-6 mt-5'>
+        <View className='pl-6 pr-6 mt-5'>
         <Text className='text-3xl font-rubik-bold'>
-          Modernica Apartment
+          {property.name || 'Property Name'}
         </Text>
         <View className='flex flex-row gap-5 mt-6 '>
-          <Text className='text-primary-300 bg-primary-200 rounded-full font-bold px-2 py-1'> Apartment </Text>
+          <Text className='text-primary-300 bg-primary-200 rounded-full font-bold px-2 py-1'>
+            {property.type || 'Property Type'}
+          </Text>
           <View className='flex flex-row px-2 py-1'>  
             <Image source={icons.star} className='size-5' />
-            <Text className='font-bold text-black-200'> 4.8 (1,275 reviews) </Text>
+            <Text className='font-bold text-black-200'>
+              {property.rating || 0} ({property.reviewCount || 0} reviews)
+            </Text>
           </View>   
         </View>
         <View className='flex flex-row justify-content gap-2 mt-6'>
@@ -63,19 +72,19 @@ const Property = () => {
             <View className='flex flex-row bg-primary-100 rounded-full size-11 items-center justify-center'>
               <Image source={icons.bed} className='size-5' />
             </View>
-            <Text className='font-semibold py-3'> 8 Beds </Text>
+            <Text className='font-semibold py-3'> {property.beds || 0} Beds </Text>
           </View>
           <View className='flex flex-row gap-2'>
             <View className='flex flex-row bg-primary-100 rounded-full size-11 items-center justify-center'>
               <Image source={icons.bath} className='size-5' />
             </View>
-            <Text className='font-semibold py-3'> 3 Baths </Text>
+            <Text className='font-semibold py-3'> {property.baths || 0} Baths </Text>
           </View>
           <View className='flex flex-row gap-2'>
             <View className='flex flex-row bg-primary-100 rounded-full size-11 items-center justify-center'>
               <Image source={icons.area} className='size-5' />
             </View>
-            <Text className='font-semibold py-3'> 2000 sqft </Text>
+            <Text className='font-semibold py-3'> {property.area || 0} sqft </Text>
           </View>
         </View>
         <View className="h-px bg-primary-200 my-10" />
@@ -83,18 +92,25 @@ const Property = () => {
           <Text className='text-2xl font-rubik-bold'>Agent</Text>
           <View className='flex flex-row mt-3 items-center justify-between'>
             <View className='flex flex-row items-center'>
-              <Image source={images.avatar} className='w-20 h-20' />
+              <Image 
+                source={property.agent?.avatar ? { uri: property.agent.avatar } : images.avatar} 
+                className='w-20 h-20' 
+              />
               <View className='pl-4'>
-                <Text className='text-xl font-rubik-semibold text-black-300'>Natasya Wilodra</Text>
-                <Text className='font-rubik-medium text-black-200 mt-1'>Owner</Text>
+                <Text className='text-xl font-rubik-semibold text-black-300'>
+                  {property.agent?.name || 'Agent Name'}
+                </Text>
+                <Text className='font-rubik-medium text-black-200 mt-1'>
+                  {property.agent?.role || 'Agent'}
+                </Text>
               </View>
             </View>
 
             <View className='flex flex-row gap-5'>
-              <TouchableOpacity onPress={() => Linking.openURL("mailto:johndoe@gmail.com")}>
+              <TouchableOpacity onPress={() => Linking.openURL(`mailto:${property.agent?.email || 'agent@example.com'}`)}>
                 <Image source={icons.chat} className='w-8 h-8' />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => Linking.openURL("tel:+1234567890")}>
+              <TouchableOpacity onPress={() => Linking.openURL(`tel:${property.agent?.phone || '+1234567890'}`)}>
                 <Image source={icons.phone} className='w-8 h-8' />
               </TouchableOpacity>
             </View>
@@ -104,9 +120,7 @@ const Property = () => {
           <Text className='text-2xl font-rubik-bold'>Overview</Text>
           <View className=' mt-5'>
             <Text className='text-xl leading-relaxed text-black-200 font-rubik'>
-            Sleek, modern 2-bedroom apartment with open living space, 
-            high-end finishes, and city views. Minutes from downtown, 
-            dining, and transit.
+              {property.description || 'No description available for this property.'}
             </Text>
           </View>
         </View>
@@ -116,56 +130,34 @@ const Property = () => {
             Facilities
           </Text>
           <View className='flex flex-row flex-wrap mt-5 gap-5'>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.carPark} className='size-9' />
-              </View>
-              <Text>Car Parking</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.swim} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Swimming Pool</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.dumbell} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Gym & Fitness</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.cutlery} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Restaurant</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.wifi} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Wifi & Network</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.dog} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Pet Center</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.run} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20' >Sports Center</Text>
-            </View>
-            <View className='flex flex-col gap-3'>
-              <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                <Image source={icons.laundry} className='size-9' />
-              </View>
-              <Text numberOfLines={1} className='truncate w-20 text-center' >Laundry</Text>
-            </View>
-            
-
+            {property.facilities && property.facilities.length > 0 ? (
+              property.facilities.map((facility: any, index: number) => (
+                <View key={index} className='flex flex-col gap-3'>
+                  <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
+                    <Image source={icons[facility.icon as keyof typeof icons] || icons.wifi} className='size-9' />
+                  </View>
+                  <Text numberOfLines={1} className='truncate w-20 text-center'>
+                    {facility.name}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              // Fallback to default facilities if none provided
+              <>
+                <View className='flex flex-col gap-3'>
+                  <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
+                    <Image source={icons.carPark} className='size-9' />
+                  </View>
+                  <Text>Car Parking</Text>
+                </View>
+                <View className='flex flex-col gap-3'>
+                  <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
+                    <Image source={icons.wifi} className='size-9' />
+                  </View>
+                  <Text numberOfLines={1} className='truncate w-20' >Wifi & Network</Text>
+                </View>
+              </>
+            )}
           </View>
         </View>
         <View className='mt-10'>
@@ -188,46 +180,74 @@ const Property = () => {
           <View className=' flex flex-row items-center gap-2 mt-5'>
             <Image source={icons.location} className='size-6'/> 
             <Text className='text-base text-black-200 font-rubik-semibold'>
-            Grand City St. 100, New York, United States
+              {property.address || 'Address not available'}
             </Text>
           </View>
           <View className='mt-5'>
-            <Image source= {images.map} style={{ height: height * 0.20 }} className='w-full rounded-2xl' />
+            <Image 
+              source={property.mapImage ? { uri: property.mapImage } : images.map} 
+              style={{ height: height * 0.20 }} 
+              className='w-full rounded-2xl' 
+            />
           </View>
         </View>
         <View className='pb-20 pt-5'>
           <View className='flex flex-row items-center justify-between'>
             <View className='flex flex-row gap-5 items-center'>
               <Image source={icons.star} className='size-8' />
-              <Text className='text-2xl font-rubik-bold'>4.8 (1,275 reviews)</Text>
-
+              <Text className='text-2xl font-rubik-bold'>
+                {property.rating || 0} ({property.reviewCount || 0} reviews)
+              </Text>
             </View>
             <Text className='font-rubik-semibold text-primary-300'>See All</Text>
           </View>
           
-          <View className='flex mt-3 '>
-            <View className='flex flex-row items-center mt-5'>
-              <Image source={images.avatar} className='w-14 h-14' />
-              <View className='pl-4'>
-                <Text className='text-xl font-rubik-semibold text-black-300'>Natasya Wilodra</Text>
+          {property.reviews && property.reviews.length > 0 ? (
+            property.reviews.slice(0, 1).map((review: any, index: number) => (
+              <View key={index} className='flex mt-3'>
+                <View className='flex flex-row items-center mt-5'>
+                  <Image 
+                    source={review.user?.avatar ? { uri: review.user.avatar } : images.avatar} 
+                    className='w-14 h-14' 
+                  />
+                  <View className='pl-4'>
+                    <Text className='text-xl font-rubik-semibold text-black-300'>
+                      {review.user?.name || 'Anonymous'}
+                    </Text>
+                  </View>
+                </View>
+                <View className='mt-5'>
+                  <Text>{review.comment || 'No comment available'}</Text>
+                </View>
+                <View className='flex flex-row justify-between mt-5'>
+                  <View className='flex flex-row items-center gap-2'>
+                    <Image source={icons.star} className='size-5' />  
+                    <Text className='font-rubik-semibold'>{review.rating || 0}</Text>
+                  </View>
+                  <Text className='font-rubik text-black-100'>
+                    {review.date || 'Recently'}
+                  </Text>
+                </View>
+              </View>
+            ))
+          ) : (
+            <View className='flex mt-3'>
+              <View className='flex flex-row items-center mt-5'>
+                <Image source={images.avatar} className='w-14 h-14' />
+                <View className='pl-4'>
+                  <Text className='text-xl font-rubik-semibold text-black-300'>No reviews yet</Text>
+                </View>
+              </View>
+              <View className='mt-5'>
+                <Text>Be the first to review this property!</Text>
               </View>
             </View>
-            <View className='mt-5'>
-             <Text>The apartment is very clean and modern. I really like the interior design. Looks like I'll feel at home 😍</Text>
-            </View>
-            <View className='flex flex-row justify-between mt-5'>
-              <View className='flex flex-row items-center gap-2'>
-                <Image source={icons.bath} className='size-5' />  
-                <Text className='font-rubik-semibold'> 938 </Text>
-              </View>
-              <Text className='font-rubik text-black-100'>6 days ago</Text>
-            </View>
-
-            
-          </View>
+          )}
         </View>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+      <CustomBottomNav />
+    </View>
   )
 }
 

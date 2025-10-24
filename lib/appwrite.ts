@@ -92,15 +92,15 @@ export async function getCurrentUser() {
     }
 }
 
-export async function getProperty(id: string) {
+export async function getProperty({id}: {id: string}) {
     try {
-        const result = await databases.listDocuments(
+        const result = await databases.getDocument(
             config.databaseId!, 
             config.propertiesCollectionId!,
-            [Query.equal('$id', id)]
+            id
         )
 
-        return result.documents[0];
+        return result;
 
     } catch (error) {
         console.error(error);
