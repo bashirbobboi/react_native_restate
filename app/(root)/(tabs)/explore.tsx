@@ -1,12 +1,72 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Text, View, Image, TouchableOpacity, FlatList, Button, ActivityIndicator } from "react-native";
+import { useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import images from "@/constants/images";
+import icons from "@/constants/icons";
+import Search from "@/components/Search";
+import { FeaturedCard, Card } from "@/components/Cards";
+import Filters from "@/components/Filters";
+import { useGlobalContext } from "@/lib/global-provider";
+import { router, useLocalSearchParams } from "expo-router";
+import { getLatestProperties, getProperties } from "@/lib/appwrite";
+import { useAppwrite } from "@/lib/useAppwrite";
+import NoResults from "@/components/NoResults";
 
-const Explore = () => {
+export default function Explore() {
+  const params = useLocalSearchParams<{ query?: string; filter?: string; }>();
+
+
+  const {data: properties, loading, refetch} = useAppwrite({
+    fn: getProperties,
+    params: {
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6
+    },
+    skip: true,
+  })
+
+  const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+  
+  useEffect(() => {
+    refetch({
+      filter: params.filter!,
+      query: params.query!,
+      limit: 20
+    })
+
+
+  }, [params.filter, params.query])
+
+
   return (
-    <View>
-      <Text>Explore</Text>
-    </View>
-  )
-}
+    <SafeAreaView className="bg-white h-full">
+      <FlatList
+          data= {properties}
+          renderItem={({item}) => <Card item={item} onPress={() => handleCardPress(item.$id)} />}
+          keyExtractor={(item) => item.$id}
+          numColumns={2}
+          contentContainerClassName="pb-32"
+          columnWrapperClassName="flex px-5 gap-5"
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            loading ? (
+              <ActivityIndicator size="large" className="text-primary-300 mt-5" />
+            ) : (
+              <NoResults />
+            )
+          }
+          ListHeaderComponent={ 
+            <View className="px-5">
+              <Search />
 
-export default Explore
+              <View className="mt-5">
+                <Filters />
+                <Text className="text-xl font-rubik-bold text-black-300 mt-5"> Found {properties?.length} properties</Text>
+              </View>
+            </View>
+          }
+      />
+    </SafeAreaView>
+  );
+}
