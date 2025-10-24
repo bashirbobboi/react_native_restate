@@ -60,25 +60,35 @@ const Property = () => {
         </View>
         <View className="h-px bg-primary-200 my-10" />
         <View>
-        <Text className='text-2xl font-rubik-bold'>Agent</Text>
-        <View className='flex flex-row mt-3 items-center justify-between'>
-          <View className='flex flex-row items-center'>
-            <Image source={images.avatar} className='w-20 h-20' />
-            <View className='pl-4'>
-              <Text className='text-xl font-rubik-semibold text-black-300'>Natasya Wilodra</Text>
-              <Text className='font-rubik-medium text-black-200 mt-1'>Owner</Text>
+          <Text className='text-2xl font-rubik-bold'>Agent</Text>
+          <View className='flex flex-row mt-3 items-center justify-between'>
+            <View className='flex flex-row items-center'>
+              <Image source={images.avatar} className='w-20 h-20' />
+              <View className='pl-4'>
+                <Text className='text-xl font-rubik-semibold text-black-300'>Natasya Wilodra</Text>
+                <Text className='font-rubik-medium text-black-200 mt-1'>Owner</Text>
+              </View>
+            </View>
+
+            <View className='flex flex-row gap-5'>
+              <TouchableOpacity onPress={() => Linking.openURL("mailto:johndoe@gmail.com")}>
+                <Image source={icons.chat} className='w-8 h-8' />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => Linking.openURL("tel:+1234567890")}>
+                <Image source={icons.phone} className='w-8 h-8' />
+              </TouchableOpacity>
             </View>
           </View>
-
-          <View className='flex flex-row gap-5'>
-            <TouchableOpacity onPress={() => Linking.openURL("mailto:johndoe@gmail.com")}>
-              <Image source={icons.chat} className='w-8 h-8' />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL("tel:+1234567890")}>
-              <Image source={icons.phone} className='w-8 h-8' />
-            </TouchableOpacity>
-          </View>
         </View>
+        <View className='mt-10'>
+          <Text className='text-2xl font-rubik-bold'>Overview</Text>
+          <View className=' mt-5'>
+            <Text className='text-base leading-relaxed text-black-200 font-rubik'>
+            Sleek, modern 2-bedroom apartment with open living space, 
+            high-end finishes, and city views. Minutes from downtown, 
+            dining, and transit.
+            </Text>
+          </View>
         </View>
       </View>
     </SafeAreaView>
