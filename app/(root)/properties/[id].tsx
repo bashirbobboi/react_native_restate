@@ -1,11 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Linking } from 'react-native'
-import React from 'react'
-import { router, useLocalSearchParams } from 'expo-router'
-import { useAppwrite } from '@/lib/useAppwrite'
-import { getProperty } from '@/lib/appwrite'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import Gallery from '@/components/Gallery'
 import icons from '@/constants/icons'
 import images from '@/constants/images'
+import { getProperty } from '@/lib/appwrite'
+import { useAppwrite } from '@/lib/useAppwrite'
+import { useLocalSearchParams } from 'expo-router'
+import React from 'react'
+import { Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 const Property = () => {
     const { id } = useLocalSearchParams();
@@ -20,13 +20,9 @@ const Property = () => {
     })
 
   return (
-    <SafeAreaView>
-      <View className="flex flex-row items-center justify-between mt-5 px-5">
-                <TouchableOpacity onPress={() => router.back()} className="flex flex-row size-11 items-center justify-center">
-                  <Image source={icons.backArrow} className="size-5" />
-                </TouchableOpacity>
-                <Image source={icons.bell} className="w-6 h-6" />
-      </View>
+    <ScrollView>
+      <Gallery />
+
       <View className='pl-6 pr-6 mt-5'>
         <Text className='text-3xl font-rubik-bold'>
           Modernica Apartment
@@ -38,7 +34,7 @@ const Property = () => {
             <Text className='font-semibold text-black-200'> 4.8 (1,275 reviews) </Text>
           </View>   
         </View>
-        <View className='flex flex-row justify-content gap-2 mt-6 pl-4'>
+        <View className='flex flex-row justify-content gap-2 mt-6'>
           <View className='flex flex-row gap-2'>
             <View className='flex flex-row bg-primary-100 rounded-full size-11 items-center justify-center'>
               <Image source={icons.bed} className='size-5' />
@@ -107,7 +103,7 @@ const Property = () => {
           </Text>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   )
 }
 
