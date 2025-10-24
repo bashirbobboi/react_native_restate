@@ -92,6 +92,22 @@ export async function getCurrentUser() {
     }
 }
 
+export async function getProperty(id: string) {
+    try {
+        const result = await databases.listDocuments(
+            config.databaseId!, 
+            config.propertiesCollectionId!,
+            [Query.equal('$id', id)]
+        )
+
+        return result.documents[0];
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function getLatestProperties() {
     try {
         const result = await databases.listDocuments(
