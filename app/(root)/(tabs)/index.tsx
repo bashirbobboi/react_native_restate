@@ -46,7 +46,7 @@ export default function Index() {
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList
-          data= {[]}
+          data= {properties}
           renderItem={({item}) => <Card item={item} onPress={() => handleCardPress(item.$id)} />}
           keyExtractor={(item) => item.$id}
           numColumns={2}
@@ -82,8 +82,11 @@ export default function Index() {
                 </TouchableOpacity>
               </View>
 
+              {latestPropertiesLoading ? 
+                <ActivityIndicator size="large" className="text-primary-300"/> : !latestProperties || latestProperties.length === 0 ? <NoResults /> : (
+
               <FlatList
-                  data= {[]}
+                  data= {latestProperties}
                   renderItem={({item}) => <FeaturedCard item={item} onPress={() => handleCardPress(item.$id)} />}
                   keyExtractor={(item) => item.$id}
                   horizontal
@@ -91,6 +94,7 @@ export default function Index() {
                   showsHorizontalScrollIndicator={false}
                   contentContainerClassName="flex gap-5 mt-5"
               />
+              )}
               </View>
 
               <View className="flex flex-row items-center justify-between">
