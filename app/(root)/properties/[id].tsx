@@ -47,8 +47,6 @@ const Property = () => {
         );
     }
 
-    // Debug: Log the property data to see what fields are available
-    console.log('Property data:', JSON.stringify(property, null, 2));
 
   return (
     <View className="flex-1 bg-white">
@@ -66,8 +64,7 @@ const Property = () => {
           <View className='flex flex-row px-2 py-1'>  
             <Image source={icons.star} className='size-5' />
             <Text className='font-bold text-black-200'>
-              {property.rating || property.average_rating || property.avg_rating || property.overall_rating || 0} 
-              ({property.reviewCount || property.review_count || property.total_reviews || property.reviews_count || 0} reviews)
+              {property.rating || 0} ({property.reviews?.length || 0} reviews)
             </Text>
           </View>   
         </View>
@@ -77,7 +74,7 @@ const Property = () => {
               <Image source={icons.bed} className='size-5' />
             </View>
             <Text className='font-semibold py-3'> 
-              {property.beds || property.bedrooms || property.bed_count || property.bedroom_count || 0} Beds 
+              {property.bedrooms || 0} Beds 
             </Text>
           </View>
           <View className='flex flex-row gap-2'>
@@ -85,7 +82,7 @@ const Property = () => {
               <Image source={icons.bath} className='size-5' />
             </View>
             <Text className='font-semibold py-3'> 
-              {property.baths || property.bathrooms || property.bath_count || property.bathroom_count || 0} Baths 
+              {property.bathrooms || 0} Baths 
             </Text>
           </View>
           <View className='flex flex-row gap-2'>
@@ -93,7 +90,7 @@ const Property = () => {
               <Image source={icons.area} className='size-5' />
             </View>
             <Text className='font-semibold py-3'> 
-              {property.area || property.sqft || property.square_feet || property.size || 0} sqft 
+              {property.area || 0} sqft 
             </Text>
           </View>
         </View>
@@ -141,13 +138,13 @@ const Property = () => {
           </Text>
           <View className='flex flex-row flex-wrap mt-5 gap-5'>
             {property.facilities && property.facilities.length > 0 ? (
-              property.facilities.map((facility: any, index: number) => (
+              property.facilities.map((facility: string, index: number) => (
                 <View key={index} className='flex flex-col gap-3'>
                   <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
-                    <Image source={icons[facility.icon as keyof typeof icons] || icons.wifi} className='size-9' />
+                    <Image source={icons.wifi} className='size-9' />
                   </View>
                   <Text numberOfLines={1} className='truncate w-20 text-center'>
-                    {facility.name}
+                    {facility}
                   </Text>
                 </View>
               ))
@@ -165,6 +162,18 @@ const Property = () => {
                     <Image source={icons.wifi} className='size-9' />
                   </View>
                   <Text numberOfLines={1} className='truncate w-20' >Wifi & Network</Text>
+                </View>
+                <View className='flex flex-col gap-3'>
+                  <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
+                    <Image source={icons.swim} className='size-9' />
+                  </View>
+                  <Text numberOfLines={1} className='truncate w-20' >Swimming Pool</Text>
+                </View>
+                <View className='flex flex-col gap-3'>
+                  <View className='bg-primary-100 rounded-full size-20 items-center justify-center'>
+                    <Image source={icons.dumbell} className='size-9' />
+                  </View>
+                  <Text numberOfLines={1} className='truncate w-20' >Gym & Fitness</Text>
                 </View>
               </>
             )}
@@ -206,16 +215,14 @@ const Property = () => {
             <View className='flex flex-row gap-5 items-center'>
               <Image source={icons.star} className='size-8' />
               <Text className='text-2xl font-rubik-bold'>
-                {property.rating || property.average_rating || property.avg_rating || property.overall_rating || 0} 
-                ({property.reviewCount || property.review_count || property.total_reviews || property.reviews_count || 0} reviews)
+                {property.rating || 0} ({property.reviews?.length || 0} reviews)
               </Text>
             </View>
             <Text className='font-rubik-semibold text-primary-300'>See All</Text>
           </View>
           
-          {(property.reviews || property.review_list || property.comments || property.feedback) && 
-           (property.reviews || property.review_list || property.comments || property.feedback).length > 0 ? (
-            (property.reviews || property.review_list || property.comments || property.feedback).slice(0, 1).map((review: any, index: number) => (
+          {property.reviews && property.reviews.length > 0 ? (
+            property.reviews.slice(0, 1).map((review: any, index: number) => (
               <View key={index} className='flex mt-3'>
                 <View className='flex flex-row items-center mt-5'>
                   <Image 

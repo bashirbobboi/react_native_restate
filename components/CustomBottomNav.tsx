@@ -26,8 +26,7 @@ const CustomBottomNav = ({ property }: CustomBottomNavProps) => {
          <View className="flex flex-col pl-5">
            <Text className="text-sm font-rubik-medium text-black-200"> Price </Text>
            <Text className="text-2xl font-rubik-bold text-primary-300">
-             {property?.currency || '$'}{property?.price || property?.cost || property?.amount || property?.listing_price || property?.sale_price ? 
-               (property?.price || property?.cost || property?.amount || property?.listing_price || property?.sale_price).toLocaleString() : '0'}
+             ${property?.price ? property.price.toLocaleString() : '0'}
            </Text>
          </View>
          <TouchableOpacity className="bg-primary-300 rounded-full w-64 px-4 py-2 items-center justify-center">
