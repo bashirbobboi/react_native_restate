@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import images from '@/constants/images'
+import { galleryImages } from '@/lib/data'
 import icons from '@/constants/icons'
 import { Models } from 'react-native-appwrite';
 
@@ -57,6 +58,13 @@ export const Card = ({ item: {image, rating, name, address, price }, onPress}: P
                 <Image source={icons.heart} className='h-5 w-5 mr-2' tintColor="#191D31"/>
             </View>
         </View>
+    </TouchableOpacity>
+  )
+}
+export const ImageCard = ({ item: { image }, onPress}: Props) => {
+  return (
+    <TouchableOpacity className='flex-1 w-full mt-4 px-3 py-4 rounded-lg realtive'>
+        <Image source={{uri: image}} className='w-20 h-20 rounded-lg' />
     </TouchableOpacity>
   )
 }
