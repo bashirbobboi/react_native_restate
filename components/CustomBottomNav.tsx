@@ -1,5 +1,3 @@
-import icons from '@/constants/icons';
-import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
@@ -10,59 +8,33 @@ const TabIcon = ({focused, icon, title}: {focused: boolean, icon: any, title: st
     </View>
 )
 
-const CustomBottomNav = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+interface CustomBottomNavProps {
+  property?: any; // Accept any property object from Appwrite
+}
 
-  const navItems = [
-    { 
-      icon: icons.home, 
-      label: 'Home', 
-      route: '/(tabs)/',
-      isActive: pathname === '/(tabs)/' || pathname === '/'
-    },
-    { 
-      icon: icons.search, 
-      label: 'Explore', 
-      route: '/(tabs)/explore',
-      isActive: pathname === '/(tabs)/explore'
-    },
-    { 
-      icon: icons.person, 
-      label: 'Profile', 
-      route: '/(tabs)/profile',
-      isActive: pathname === '/(tabs)/profile'
-    },
-  ];
-
-  const handleNavigation = (route: string) => {
-    router.push(route);
-  };
+const CustomBottomNav = ({ property }: CustomBottomNavProps) => {
 
   return (
     <View 
       className="absolute bottom-0 left-0 right-0 bg-white border-t border-primary-200"
       style={{
-        minHeight: 70,
+        minHeight: 90,
         borderTopColor: '#0061FF1A',
       }}
     >
-      <View className="flex-row justify-around">
-        {navItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleNavigation(item.route)}
-            className="flex-1 items-center"
-            activeOpacity={0.7}
-          >
-            <TabIcon 
-              icon={item.icon} 
-              focused={item.isActive} 
-              title={item.label} 
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
+       <View className="flex flex-row justify-between px-5 pt-5">
+         <View className="flex flex-col pl-5">
+           <Text className="text-sm font-rubik-medium text-black-200"> Price </Text>
+           <Text className="text-2xl font-rubik-bold text-primary-300">
+             {property?.currency || '$'}{property?.price || property?.cost || property?.amount || property?.listing_price || property?.sale_price ? 
+               (property?.price || property?.cost || property?.amount || property?.listing_price || property?.sale_price).toLocaleString() : '0'}
+           </Text>
+         </View>
+         <TouchableOpacity className="bg-primary-300 rounded-full w-64 px-4 py-2 items-center justify-center">
+           <Text className="text-xl font-rubik-bold text-white"> Book Now </Text>
+         </TouchableOpacity>
+         
+       </View>
     </View>
   );
 };
