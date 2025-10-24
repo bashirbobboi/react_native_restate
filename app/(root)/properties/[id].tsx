@@ -90,6 +90,22 @@ const Property = () => {
             </Text>
           </View>
         </View>
+
+        <View className='mt-10'>
+          <Text className='text-2xl font-rubik-bold'>
+            Facilities
+          </Text>
+        </View>
+        <View className='mt-10'>
+          <Text className='text-2xl font-rubik-bold'>
+            Gallery
+          </Text>
+        </View>
+        <View className='mt-10'>
+          <Text className='text-2xl font-rubik-bold'>
+            Location
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   )
