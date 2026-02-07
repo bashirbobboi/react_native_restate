@@ -1,7 +1,6 @@
- import { createContext } from "react";
- import { useAppwrite } from "./useAppwrite";
- import { getCurrentUser } from "./appwrite";
- import { useContext } from "react";
+ import { createContext, useContext } from "react";
+import { getCurrentUser } from "./appwrite";
+import { useAppwrite } from "./useAppwrite";
 
  interface User {
     $id: string;
@@ -23,18 +22,22 @@
     const {
         data: user,
         loading,
-        refetch
+        refetch: refetchUser
     } = useAppwrite({ 
         fn: getCurrentUser 
     });
 
     const isLoggedIn = !!user;
 
+    const refetch = async (newParams?: Record<string, string | number>) => {
+        await refetchUser(newParams || {});
+    };
+
     console.log(JSON.stringify(user, null, 2));
     return (
         <GlobalContext.Provider value={{
             isLoggedIn,
-            user,
+            user: user as User | null,
             loading,
             refetch
         }}>
