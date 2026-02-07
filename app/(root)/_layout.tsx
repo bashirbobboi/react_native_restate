@@ -18,5 +18,5 @@ export default function AppLayout() {
         return <Redirect href="/sign-in" />
     }
 
-    return <Slob t />
+    return <Slot />
 }
